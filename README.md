@@ -1,3 +1,4 @@
+# ❗️ Warning: this branch is not ready yet. Do not use this branch for experiments. ❗️
 # snn-motor-control
 
 This repository reproduces the experiments from:
@@ -11,6 +12,10 @@ This repository reproduces the experiments from:
 
 The Python 3.12 and NEURON 8.2.6 dummy-arm workflow can currently run,
 validate, plot, and animate saved results.
+
+This branch also preserves the legacy realistic musculoskeletal-arm sources.
+That backend is not currently runnable on Apple Silicon macOS and remains
+separate from the validated dummy-arm workflow documented below.
 
 ## Included Results
 
@@ -194,7 +199,22 @@ python validate_run.py outputs/train-360s-test-1s
 The 360 seconds are simulation time, not a promise about wall-clock runtime.
 Setting `SNN_TRAIN_MS` replaces this default.
 
-## 6. Visualize Saved Results
+## 6. Use the Realistic Musculoskeletal Arm
+
+The 2015 paper uses a realistic OpenSim musculoskeletal arm. To select this
+backend, set `dummyArm = 0` in `arminterface_pipe.py`, then run:
+
+```bash
+SNN_USE_NEURON_GUI=0 \
+SNN_RUN_ID=real-arm-paper \
+python sim.py
+```
+
+This command is currently expected to fail on Apple Silicon macOS. The
+repository does not contain the `msarm/msarm` executable, the bundled shared
+libraries target Linux x86-64, and the checked-in C++ sources are incomplete.
+
+## 7. Visualize Saved Results
 
 Generate the standard trajectory, spike-raster, muscle-command, joint-angle,
 and target-error summary:
@@ -224,7 +244,7 @@ the untrimmed records:
 python visualize_run.py outputs/train-360s-test-1s --arm-start-ms 0
 ```
 
-## 7. Render an Arm-Motion Video
+## 8. Render an Arm-Motion Video
 
 Render the saved dummy-arm trajectory without rerunning training:
 
@@ -264,7 +284,7 @@ Use `--fps` to change playback speed. For example:
 python animate_run.py outputs/train-360s-test-1s --fps 60
 ```
 
-## 8. Output Layout
+## 9. Output Layout
 
 Each run uses a separate directory:
 
@@ -291,7 +311,7 @@ When `SNN_RUN_ID` is omitted, the launcher creates a unique timestamped ID:
 SNN_USE_NEURON_GUI=0 python sim.py
 ```
 
-## 9. Use the Native NEURON GUI on macOS
+## 10. Use the Native NEURON GUI on macOS
 
 The local macOS GUI does not require XQuartz. Run Python in interactive mode
 so the process and native GUI remain open after the script finishes:
@@ -325,8 +345,19 @@ Live GUI rendering can slow the simulation and does not automatically record
 a video. For reproducible, shareable output, prefer a headless run followed by
 `animate_run.py`.
 
-## 10. Run the Compatibility Tests
+## 11. Run the Compatibility Tests
 
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## Current Realistic-Arm Limitations
+
+- `dummyArm = 1` remains the default in `arminterface_pipe.py`.
+- The required `msarm/msarm` executable is absent.
+- The libraries under `msarm/lib/` are Linux x86-64 ELF binaries and cannot be
+  loaded natively on Apple Silicon macOS.
+- The C++ build references missing headers, build rules, and
+  `LSODAIntegrator2.cpp`.
+- The included videos show the two-dimensional dummy arm, not realistic muscle
+  deformation or muscle force.

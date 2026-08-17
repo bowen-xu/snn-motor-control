@@ -10,6 +10,7 @@ from neuron import h
 
 import analyse_funcs
 import analysis
+import armGraphs
 import hocinterface
 import neuroplot
 
@@ -65,6 +66,23 @@ class Python3AnalysisCompatibilityTests(unittest.TestCase):
             ax=axes,
         )
         self.assertEqual(len(axes.lines), 1)
+
+    def test_arm_graphs_accept_fractional_time_bounds(self):
+        sample_count = 10
+        armGraphs.plotGraphs(
+            np.zeros((9, sample_count)),
+            np.zeros((2, sample_count)),
+            np.ones((18, sample_count)),
+            np.ones((18, sample_count)),
+            np.ones((18, sample_count)),
+            np.ones((18, sample_count)),
+            0.01,
+            0.05,
+            10.0,
+            False,
+            False,
+            "unused.png",
+        )
 
     def test_arm_kinematics_round_trip(self):
         expected_angles = np.array([0.62, 1.53])
