@@ -1,0 +1,10 @@
+// $Id: python.hoc,v 1.6 2011/07/30 19:45:58 billl Exp $
+
+objref p
+p = new PythonObject()
+nrnpython("ev = lambda arg : eval(arg)")
+nrnpython("import math")
+nrnpython("import numpy")
+nrnpython("from neuron import h")
+nrnpython("import sys")
+nrnpython("exec(compile(open('misc.py').read(), 'misc.py', 'exec'))")

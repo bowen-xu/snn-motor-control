@@ -1,0 +1,7 @@
+# Python 3.12.13 (managed by the `snn` Conda environment)
+# Setuptools 80.9.0 retains pkg_resources, which NEURON 8.2.6 launchers require.
+setuptools==80.9.0
+numpy==1.26.4
+neuron==8.2.6
+scipy==1.12.0
+matplotlib==3.8.4
